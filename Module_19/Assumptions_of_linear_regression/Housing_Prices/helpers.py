@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from scipy.stats import bartlett
 from scipy.stats import boxcox
-from scipy.stats import normaltest
-from sklearn.preprocessing import StandardScaler
+from scipy.stats import levene
+from statsmodels.tsa.stattools import acf
 
 # Global Variables
 thresholds = {
@@ -113,3 +114,40 @@ def dummyify(df, column_list):
         df_dummy.columns = new_dummy_columns
         dummy_list.append(df_dummy)
     return pd.concat(dummy_list, axis=1)
+
+
+# Model Evaluation
+
+def check_feature_linearity(df, feature_list, y_pred):
+    for feature in feature_list:
+        plt.scatter(df[feature], y_pred)
+        plt.title(f'Inspect Linearity for Feature {feature}')
+        plt.ylabel('target prediction')
+        plt.xlabel(f'{feature}')
+        plt.show()
+
+
+def check_homoscedasticity(y_pred, errors):
+    plt.scatter(y_pred, errors)
+    plt.title('Errors vs. Predictions')
+    plt.xlabel('predictions')
+    plt.ylabel('errors')
+    plt.show()
+
+    bartlett_stats = bartlett(y_pred, errors)
+    levene_stats = levene(y_pred, errors)
+
+    print(f'The Bartlett test is {bartlett_stats[0]}, with a p-value of {bartlett_stats[1]}.')
+    print(f'The Levine test is {levene_stats[0]}, with a p-value of {levene_stats[1]}.')
+
+
+def check_error_autocorrelation(errors):
+    error_autocorr = acf(errors, fft=False)
+
+    plt.plot(error_autocorr[1:])
+    plt.title('Error Autocorrelation Values')
+    plt.ylabel('autocorrelation')
+    plt.show()
+
+    print(f'Max autocorrelation: {error_autocorr[1:].max():0.3f}')
+    print(f'Min autocorrelation: {error_autocorr[1:].min():0.3f}')
