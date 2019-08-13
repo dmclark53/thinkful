@@ -146,6 +146,7 @@ def check_error_autocorrelation(errors):
 
     plt.plot(error_autocorr[1:])
     plt.title('Error Autocorrelation Values')
+    plt.xlabel('lag')
     plt.ylabel('autocorrelation')
     plt.show()
 
