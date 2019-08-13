@@ -116,14 +116,13 @@ def standardize(df, column_list):
 
 
 def select_cat_variables(df, target_var, cat_list, alpha=0.05):
-    y = df[target_var].astype(str)
+    y = df[target_var]
     cat_features = []
     print('Chi-squared Statistics:')
     for cat in cat_list:
         chi2, p, dof, expected = chi2_contingency(pd.crosstab(y, df[cat]))
         if p < alpha:
-            # print(f'* {cat}: chi2 = {chi2}, p-value = {p}, dof = {dof}, expected = {expected}')
-            print(f'* {cat}: chi2 = {chi2}, p-value = {p}, dof = {dof}')
+            print(f'* {cat}: chi2 = {chi2:0.3f}, p-value = {p:0.3e}, dof = {dof}')
             cat_features.append(cat)
     return cat_features
 
