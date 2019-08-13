@@ -3,8 +3,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from scipy.stats import boxcox
+from scipy.stats import chi2_contingency
 from scipy.stats import normaltest
 from sklearn.preprocessing import StandardScaler
+
 
 # Global Variables
 thresholds = {
@@ -73,8 +75,10 @@ def look_for_outliers(df, column_list, max_boxes=None):
 
 def apply_boxcox_transform(df, columns):
     for column in columns:
-        boxcox_transform, _ = boxcox(df[column] + 1)
-        df[f'{column}_bc'] = boxcox_transform
+        min_value = df[column].min()
+        offset = np.min([0, min_value])
+        boxcox_transform, _ = boxcox(df[column] - offset + 1)
+        df[f'{column}_bc'] = boxcox_transform + offset -1
     return df
 
 
@@ -96,6 +100,13 @@ def correct_outliers(df, column_list):
     return df
 
 
+def check_for_normality(df, column_list):
+    print('Normal test results:')
+    for column in column_list:
+        normal_stat, pval = normaltest(df[column])
+        print(f'* {column}: normal_stat = {normal_stat:0.3f}, p-value = {pval:0.4f}.')
+
+
 def standardize(df, column_list):
     for column in column_list:
         mean_value = df[column].mean()
@@ -104,12 +115,26 @@ def standardize(df, column_list):
     return df
 
 
+def select_cat_variables(df, target_var, cat_list, alpha=0.05):
+    y = df[target_var].astype(str)
+    cat_features = []
+    print('Chi-squared Statistics:')
+    for cat in cat_list:
+        chi2, p, dof, expected = chi2_contingency(pd.crosstab(y, df[cat]))
+        if p < alpha:
+            # print(f'* {cat}: chi2 = {chi2}, p-value = {p}, dof = {dof}, expected = {expected}')
+            print(f'* {cat}: chi2 = {chi2}, p-value = {p}, dof = {dof}')
+            cat_features.append(cat)
+    return cat_features
+
+
 def dummyify(df, column_list):
     dummy_list = []
     for column in column_list:
-        df_dummy = pd.get_dummies(df[column])
+        df_dummy = pd.get_dummies(df[column], drop_first=True)
         dummy_columns = df_dummy.columns.tolist()
         new_dummy_columns = [f'{column}_{x}_oh' for x in dummy_columns]
         df_dummy.columns = new_dummy_columns
         dummy_list.append(df_dummy)
+    dummy_list.append(df)
     return pd.concat(dummy_list, axis=1)
