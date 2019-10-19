@@ -542,7 +542,7 @@ def plot_feature_importance(features, coeffs, coeff_thresh=0):
     df_fi = pd.DataFrame({'feature': features, 'coef': coeffs})
     df_fi_sorted = df_fi[(df_fi['coef'] > coeff_thresh) |
                          (df_fi['coef'] < -1.0*coeff_thresh)].sort_values(by='coef', ascending=False)
-    f, ax = plt.subplots(figsize=(6, 8))
+    f, ax = plt.subplots(figsize=(6, 12))
     df_fi_sorted.plot.barh(x='feature', ax=ax)
     plt.title(f'Features w/ Coefficents > |{coeff_thresh}|')
     plt.show()
