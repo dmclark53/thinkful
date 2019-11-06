@@ -120,7 +120,7 @@ def stack_dataframe(df, column_list):
     return df_stacked
 
 
-def create_boxplots(df, column_list, max_boxes=None, log_scale=False):
+def create_boxplots(df, column_list, max_boxes=None, log_scale=False, file_name=None):
 
     offset_dict = {}
 
@@ -144,6 +144,8 @@ def create_boxplots(df, column_list, max_boxes=None, log_scale=False):
                     ax.set_yscale('log')
                     ax.set_ylabel('log (value)')
                 plt.show()
+                if file_name:
+                    f.savefig(f'./images/{file_name}.png')
             if remainder_boxes > 0:
                 df_stacked = stack_dataframe(df, column_list[i + max_boxes:])
                 f, ax = plt.subplots(figsize=(14, 6))
@@ -152,6 +154,8 @@ def create_boxplots(df, column_list, max_boxes=None, log_scale=False):
                     ax.set_yscale('log')
                     ax.set_ylabel('log (value)')
                 plt.show()
+                if file_name:
+                    f.savefig(f'./images/{file_name}.png')
         else:
             df_stacked = stack_dataframe(df, column_list)
             f, ax = plt.subplots(figsize=(14, 6))
@@ -160,6 +164,8 @@ def create_boxplots(df, column_list, max_boxes=None, log_scale=False):
                 ax.set_yscale('log')
                 ax.set_ylabel('log (value)')
             plt.show()
+            if file_name:
+                f.savefig(f'./images/{file_name}.png')
     else:
         f, ax = plt.subplots(figsize=(14, 6))
         sns.boxplot(y=column_list[0], data=df)
@@ -167,6 +173,8 @@ def create_boxplots(df, column_list, max_boxes=None, log_scale=False):
             ax.set_yscale('log')
             ax.set_ylabel('log (value)')
         plt.show()
+        if file_name:
+            f.savefig(f'./images/{file_name}.png')
 
     if log_scale:
         for column in column_list:
@@ -535,6 +543,7 @@ def plot_confussion_matrix(y_true, y_pred):
     sns.heatmap(df_cm, cmap='Blues', annot=True, fmt='g', ax=ax)
     ax.set(yticks=[0, 2],
            xticks=[0, 1])
+    fig.savefig('./images/confussion_matrix.png')
     plt.show()
 
 
@@ -545,6 +554,7 @@ def plot_feature_importance(features, coeffs, coeff_thresh=0):
     f, ax = plt.subplots(figsize=(6, 12))
     df_fi_sorted.plot.barh(x='feature', ax=ax)
     plt.title(f'Features w/ Coefficents > |{coeff_thresh}|')
+    f.savefig('./images/feature_importance.png')
     plt.show()
 
 
@@ -557,6 +567,7 @@ def plot_roc_curve():
     plt.title('ROC Curve')
     plt.xlabel('False Postive Rate')
     plt.ylabel('True Postive Rate')
+    plt.savefig('./images/roc_curve.png')
     plt.show()
 
 
