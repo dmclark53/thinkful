@@ -17,6 +17,8 @@ __MACOSX
 
 # Extensions
 *.csv
+*.key
 
 # Misc
 plan.md
+/Capstone-Projects/Capstone-3-Supervised-learning/images/
