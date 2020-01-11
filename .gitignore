@@ -1,5 +1,7 @@
 # Directories
 data/
+docs/
+config/
 images/
 
 # Python
