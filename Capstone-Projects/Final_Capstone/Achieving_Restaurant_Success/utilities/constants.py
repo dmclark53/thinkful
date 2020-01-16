@@ -63,3 +63,5 @@ PARAMS = {
     'batch_size': '',
     'epochs': ''
 }
+
+PREDICTIONS = {}
