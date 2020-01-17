@@ -46,7 +46,8 @@ Modeling
 '''
 
 # VOCAB_SIZE = 10386
-VOCAB_SIZE = 9566
+# VOCAB_SIZE = 9566
+VOCAB_SIZE = 27886
 
 METRICS = [
     TruePositives(name='tp'),

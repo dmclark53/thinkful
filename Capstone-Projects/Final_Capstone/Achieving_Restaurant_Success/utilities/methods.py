@@ -18,10 +18,10 @@ def build_mlp_model(metrics=None, params=None):
     clear_session()
 
     model = Sequential([
-        Dense(512, input_shape=(params['input_shape'],), activation='relu'),
-        Dropout(0.3),
+        Dense(1024, input_shape=(params['input_shape'],), activation='relu'),
+        Dropout(0.2),
         Dense(512, activation='relu'),
-        Dropout(0.3),
+        Dropout(0.2),
         Dense(1, activation='sigmoid')
     ])
 
@@ -53,7 +53,6 @@ def build_lstm_model(metrics=None, params=None):
 
     model = Sequential([
         Embedding(params['vocab_size'], params['embedding_size'], input_length=params['input_length']),
-        # Dropout(params['drop_out_prob'], input_shape=(params['embedding_size'], )),
         LSTM(params['lstm_units']),
         Dense(1, activation='sigmoid')
     ])
